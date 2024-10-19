@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react"
 import { baseAPI_URL } from "../API"
 
-export const Interviews = ({opened, setOpened}: {opened: boolean,setOpened: (opened: boolean) => void}) => {
-    let [interviews, setInterviews] = useState([])
+type interviewTS = {
+    jobTitle: string,
+    experience: string,
+    endDate: string,
+    jobDesc: string,
+    candidates: string[],
+}
+
+export const Interviews = ({setOpened}: {setOpened: (opened: boolean) => void}) => {
+    let [interviews, setInterviews] = useState<interviewTS[]>([])
     useEffect(() => {
         async function Intitialize(){
             let request = await fetch( baseAPI_URL + '/getInterviews', {
@@ -28,7 +36,7 @@ export const Interviews = ({opened, setOpened}: {opened: boolean,setOpened: (ope
             {
                 interviews.map((item, index) => {
                     return(
-                        <div className="flex flex-row items-center mt-2 text-xl bg-slate-200 rounded-lg py-2 pl-4 w-full">
+                        <div key={index} className="flex flex-row items-center mt-2 text-xl bg-slate-200 rounded-lg py-2 pl-4 w-full">
                             <span>{item.jobTitle}</span>
                             <span className="ml-8">Experience - {`${parseInt(item.experience) - 1} - ${parseInt(item.experience)} Years`}</span>
                             <span className="ml-12">Last Date - {item.endDate.slice(0, 10)}</span>

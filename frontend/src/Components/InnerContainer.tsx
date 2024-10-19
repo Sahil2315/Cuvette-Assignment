@@ -1,4 +1,3 @@
-import { Route, Routes } from 'react-router-dom';
 import { Interviews } from './Interviews';
 import { NewInterview } from './NewInterview';
 import { useState } from 'react';

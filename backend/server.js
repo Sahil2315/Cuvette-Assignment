@@ -2,7 +2,7 @@ let express = require("express");
 let app = express();
 let cors = require("cors");
 let nodemailer = require("nodemailer");
-let { newCompany } = require('./database')
+let { newCompany, getInterviews, newInterview } = require('./database')
 let jwt = require('jsonwebtoken')
 const path = require('path')
 require("dotenv").config({path: path.resolve(__dirname, '.env')})
@@ -34,20 +34,20 @@ app.post('/signUp', async (req, res) => {
         'email': emailOTP
       }
       const emailInfo = await transporter.sendMail({
-        from: '"Cuvette Job Portal"', // sender address
-        to: req.body.company.companyEmail, // list of receivers
-        subject: "Email OTP For The Cuvette Job Portal", // Subject line, // plain text body
+        from: '"Cuvette Job Portal"',
+        to: req.body.company.companyEmail,
+        subject: "Email OTP For The Cuvette Job Portal",
         html: `
             <span style="font-size: 20px;"> Your Desired OTP is ${emailOTP}</span>
-        `, // html body
+        `,
       });
       const mobileInfo = await transporter.sendMail({
-        from: '"Cuvette Job Portal"', // sender address
-        to: req.body.company.companyEmail, // list of receivers
-        subject: "Mobile OTP For The Cuvette Job Portal", // Subject line, // plain text body
+        from: '"Cuvette Job Portal"',
+        to: req.body.company.companyEmail,
+        subject: "Mobile OTP For The Cuvette Job Portal",
         html: `
             <span style="font-size: 20px;"> Your Desired OTP is ${mobileOTP}</span>
-        `, // html body
+        `,
       });
       console.log("Message sent: %s", mobileInfo.messageId);
       console.log("Message sent: %s", emailInfo.messageId);
@@ -58,6 +58,57 @@ app.post('/signUp', async (req, res) => {
     else{
       res.send({'success': false})
     }
+})
+
+app.post('/emailVerify', (req, res) => {
+  if(req.body.emailOTP == OTPHolder[req.body.email].email){
+    res.send({'success': true})
+  }
+  else{
+    res.send({'success': false})
+  }
+})
+
+app.post('/mobileVerify', (req, res) => {
+  if(req.body.mobileOTP == OTPHolder[req.body.email].mobile){
+    res.send({'success': true})
+  }
+  else{
+    res.send({'success': false})
+  }
+})
+
+app.post('/getInterviews', async (req, res) => {
+  let interList = await getInterviews(req.body.email)
+  res.send({
+    'success': true,
+    'list': interList
+  })
+})
+
+app.post('/newInterview', async (req, res) => {
+  let response = await newInterview(req.body)
+  if(response){
+    for(let i=0; i<req.body.candidates.length; i++){
+      try{
+        const emailInfo = await transporter.sendMail({
+          from: '"Cuvette Job Portal"',
+          to: req.body.candidates[i], 
+          subject: "Job Offer from the Cuvette Job Portal", 
+          html: `
+              <span style="font-size: 20px;">Congratulations!<br>You have been selected as a Candidate for a Job Opportunity by ${req.body.companyEmail} Position - ${req.body.jobTitle} Experience Level: ${parseInt(req.body.experience) -1} - ${parseInt(req.body.experience) } Years</span>
+          `, 
+        });
+      }
+      catch(err) {
+        continue
+      }
+    }
+    res.send({'success': true})
+  }
+  else{
+    res.send({'success': false})
+  }
 })
 
 app.listen(3000, () => {

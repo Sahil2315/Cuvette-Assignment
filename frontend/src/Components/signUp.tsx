@@ -38,8 +38,6 @@ export const Signup = () => {
         })
         let response = await request.json()
         if(response.success){
-            localStorage.setItem('token', response.token)
-            console.log(response.token)
             setTokenGen(true)
         }
         else{
@@ -54,6 +52,8 @@ export const Signup = () => {
         if (tokenGen){
             console.log("reached here")
             navigate('/verify', {replace: true})
+            localStorage.setItem("email", email)
+            localStorage.setItem("name", name)
         }
     }, [tokenGen])
     

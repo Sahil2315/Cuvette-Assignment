@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ballLogo from "../assets/ball.svg"
 import homeLogo from "../assets/home.svg"
 import InnerContainer from "./InnerContainer"
 
 const Home = () => {
     let[name, setName] = useState<string>("Your Name")
+    useEffect(() => {
+        setName(localStorage.getItem('name') as string)
+    }, [])
   return (
     <div className="h-full w-full pt-24">
         <div className="h-full flex flex-row w-full border-t-4">

@@ -2,13 +2,69 @@ import { useState } from "react"
 import checkCircle from "../assets/checkCircle.svg"
 import mailSVG from "../assets/mail.svg"
 import phoneSVG from "../assets/phone.svg"
-
-
+import { baseAPI_URL } from "../API"
+import { useNavigate } from "react-router-dom"
 
 export const SignUp2 = () => {
     let [emailOTP, setEmail] = useState("")
     let [mobileOTP, setMobile] = useState("")
-    
+    let [emailVerified, setEVerified] = useState(false)
+    let [phoneVerified, setPVerified] = useState(false)
+
+    let navigate = useNavigate()
+
+    async function emailVerify(){
+        if(emailOTP.length == 6 && /^\d+$/.test(emailOTP) ){
+            let request = await fetch( baseAPI_URL + '/emailVerify', {
+                'method': 'POST', 
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': JSON.stringify({
+                    email: localStorage.getItem("email"),
+                    emailOTP: parseInt(emailOTP)
+                })
+            })
+            let response = await request.json()
+            if(response.success){
+                setEVerified(true)
+                if(phoneVerified){
+                    navigate('/home')
+                }
+            }
+            else alert("Wrong OTP\nPlease Check and Enter Again")
+        }
+        else{
+            alert("OTP Not in Correct Format")
+        }
+    }
+
+    async function phoneVerify(){
+        if(mobileOTP.length == 6 && /^\d+$/.test(mobileOTP) ){
+            let request = await fetch( baseAPI_URL + '/mobileVerify', {
+                'method': 'POST', 
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': JSON.stringify({
+                    email: localStorage.getItem("email"),
+                    mobileOTP: parseInt(mobileOTP)
+                })
+            })
+            let response = await request.json()
+            if(response.success){
+                setPVerified(true)
+                if(emailVerified){
+                    navigate('/home')
+                }
+            }
+            else alert("Wrong OTP\nPlease Check and Enter Again")
+        }
+        else{
+            alert("OTP Not in Correct Format")
+        }
+    }
+
   return (
     <div className="pt-20 h-full w-full flex flex-row items-center">
         <div className="flex-1">
@@ -21,15 +77,15 @@ export const SignUp2 = () => {
                 <div className="border-2 h-[60px] px-4 w-[530px] rounded-lg border-gray-200 bg-neutral-100 flex flex-row items-center mt-4">
                     <img src={mailSVG} className="w-[20px]" />
                     <input type="text" defaultValue={emailOTP} onChange={(e) => {setEmail(e.target.value)}} className="flex-1 placeholder-slate-700 text-xl ml-4 bg-neutral-100 border-none outline-none" placeholder="Email OTP"/>
-                    <img src={checkCircle} alt="" />
+                    <img src={checkCircle} className={emailVerified ? '' : 'hidden'} alt="" />
                 </div>
-                <button className="w-full bg-blue-500 py-1 text-xl text-white font-semibold rounded-lg mt-2">Verify</button>
+                <button onClick={emailVerify} className={`w-full bg-blue-500 py-1 text-xl text-white font-semibold rounded-lg mt-2 ${emailVerified ? 'hidden' : ''}`}>Verify</button>
                 <div className="border-2 h-[60px] px-4 w-[530px] rounded-lg border-gray-200 bg-neutral-100 flex flex-row items-center mt-4">
                     <img src={phoneSVG} className="w-[20px]" />
                     <input type="text" defaultValue={mobileOTP} onChange={(e) => {setMobile(e.target.value)}} className="flex-1 placeholder-slate-700 text-xl ml-4 bg-neutral-100 border-none outline-none" placeholder="Mobile OTP"/>
-                    <img src={checkCircle} alt="" />
+                    <img src={checkCircle} className={phoneVerified ? '' : 'hidden'} alt="" />
                 </div>
-                <button className="w-full bg-blue-500 py-1 text-xl text-white font-semibold rounded-lg mt-2">Verify</button>
+                <button onClick={phoneVerify} className={`w-full bg-blue-500 py-1 text-xl text-white font-semibold rounded-lg mt-2 ${phoneVerified ? 'hidden': ''}`}>Verify</button>
             </div>
         </div>
         <span className="absolute top-0 right-0 mr-20 mt-10 text-xl">

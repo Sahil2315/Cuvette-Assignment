@@ -18,5 +18,23 @@ async function newCompany (obj){
     }
 }
 
+async function getInterviews(email){
+    let interviewList = await jobs.find({
+        'companyEmail': email
+    })
+    return interviewList
+}
+async function newInterview (obj){
+    try{
+        const jobInstance = await new jobs(obj)
+        jobInstance.save()
+        return true
+    }
+    catch(err){
+        console.log(err)
+        return false
+    }
+}
 
-module.exports = {newCompany}
+
+module.exports = {newCompany, getInterviews, newInterview}

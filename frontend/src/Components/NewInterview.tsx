@@ -14,7 +14,7 @@ export const NewInterview = ({setOpened}: {setOpened: (opened: boolean) => void}
     let [endDate, setED] = useState<string>("")
 
     function keyDetect(e: KeyboardEvent<HTMLInputElement>){
-        if(e.key != ","){
+        if(e.key != "," && e.key != "Enter"){
             setCandEmail((e.target as HTMLInputElement).value)
         }
         else{

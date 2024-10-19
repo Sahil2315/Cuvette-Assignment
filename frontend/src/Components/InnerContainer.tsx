@@ -7,7 +7,7 @@ const InnerContainer = () => {
   return (
     <div className='h-full w-full'>
       {
-        opened ?  <NewInterview setOpened={setOpened}/> : <Interviews opened={opened} setOpened={setOpened}/>
+        opened ?  <NewInterview setOpened={setOpened}/> : <Interviews setOpened={setOpened}/>
       }
     </div>
   )

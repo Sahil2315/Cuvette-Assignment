@@ -2,7 +2,7 @@
 ___________________________________
 
 ### 0 -> Create a Folder/Directory for the Project Environment
-### 1 => git init
+### 1 -> git init
 ### 2 -> git remote add origin git@github.com:Sahil2315/Cuvette-Assignment.git
 ### 3 -> git pull origin master (wait until completed)
 ### 4 -> Open Terminal on the Project Folder/Directory (You can also perform Git Commands on the Terminal instead of Git Bash)

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import checkCircle from "../assets/checkCircle.svg"
 import mailSVG from "../assets/mail.svg"
 import phoneSVG from "../assets/phone.svg"
@@ -12,6 +12,29 @@ export const SignUp2 = () => {
     let [phoneVerified, setPVerified] = useState(false)
 
     let navigate = useNavigate()
+
+    useEffect(() => {
+        if(emailVerified && phoneVerified){
+            async function tokenGen(){
+                let request = await fetch( baseAPI_URL + '/tokenGen', {
+                    'method': 'POST', 
+                    'headers': {
+                        'Content-Type': 'application/json'
+                    },
+                    'body': JSON.stringify({
+                        'email': localStorage.getItem('email'),
+                        'name': localStorage.getItem('name')
+                    })
+                })
+                let response = await request.json()
+                if(response.success){
+                    localStorage.setItem("userToken", response.token)
+                    navigate('/home')
+                }
+            }
+            tokenGen()
+        }
+    }, [emailVerified, phoneVerified])
 
     async function emailVerify(){
         if(emailOTP.length == 6 && /^\d+$/.test(emailOTP) ){
@@ -28,9 +51,6 @@ export const SignUp2 = () => {
             let response = await request.json()
             if(response.success){
                 setEVerified(true)
-                if(phoneVerified){
-                    navigate('/home')
-                }
             }
             else alert("Wrong OTP\nPlease Check and Enter Again")
         }
@@ -54,9 +74,6 @@ export const SignUp2 = () => {
             let response = await request.json()
             if(response.success){
                 setPVerified(true)
-                if(emailVerified){
-                    navigate('/home')
-                }
             }
             else alert("Wrong OTP\nPlease Check and Enter Again")
         }

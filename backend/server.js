@@ -24,6 +24,24 @@ let OTPHolder = {
 
 }
 
+app.get('/', (req, res) => {
+  res.send({'success': true})
+})
+
+app.post('/tokenCheck', (req, res) => {
+  try{
+    let Object = jwt.verify(req.body.token, process.env.JWT_SECRET)
+    res.send({
+      'success': true,
+      'name': Object.name,
+      'email': Object.email
+    })
+  } 
+  catch(err){
+    res.send({'success': false})
+  }
+})
+
 app.post('/signUp', async (req, res) => {
     let createComp = await newCompany(req.body.company)
     if(createComp){
@@ -49,8 +67,6 @@ app.post('/signUp', async (req, res) => {
             <span style="font-size: 20px;"> Your Desired OTP is ${mobileOTP}</span>
         `,
       });
-      console.log("Message sent: %s", mobileInfo.messageId);
-      console.log("Message sent: %s", emailInfo.messageId);
       res.send({
         'success': true,
       })
@@ -76,6 +92,14 @@ app.post('/mobileVerify', (req, res) => {
   else{
     res.send({'success': false})
   }
+})
+
+app.post('/tokenGen', (req, res) => {
+  let userToken = jwt.sign({email: req.body.email, name: req.body.name}, process.env.JWT_SECRET)
+  res.send({
+    'success': true,
+    'token': userToken
+  })
 })
 
 app.post('/getInterviews', async (req, res) => {

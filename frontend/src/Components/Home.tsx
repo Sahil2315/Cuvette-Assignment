@@ -2,12 +2,18 @@ import { useEffect, useState } from "react"
 import ballLogo from "../assets/ball.svg"
 import homeLogo from "../assets/home.svg"
 import InnerContainer from "./InnerContainer"
+import { useNavigate } from "react-router-dom"
 
 const Home = () => {
     let[name, setName] = useState<string>("Your Name")
     useEffect(() => {
         setName(localStorage.getItem('name') as string)
     }, [])
+    let navigate = useNavigate()
+    function logOut (){
+        localStorage.clear()
+        navigate(-1)
+    }
   return (
     <div className="h-full w-full pt-24">
         <div className="h-full flex flex-row w-full border-t-4">
@@ -25,7 +31,7 @@ const Home = () => {
                 <select className="ml-4 text-xl pr-4 outline-none cursor-pointer">
                     <option value="0">{name}</option>
                 </select>
-                <button onClick={() => {localStorage.clear()}} className="text-white py-1 px-2 rounded-lg ml-4 bg-red-500">Log Out</button>
+                <button onClick={() => logOut()} className="text-white py-1 px-2 rounded-lg ml-4 bg-red-500">Log Out</button>
             </div>
         </div>
     </div>

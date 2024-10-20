@@ -12,7 +12,7 @@ const Home = () => {
     let navigate = useNavigate()
     function logOut (){
         localStorage.clear()
-        navigate(-1)
+        navigate('/')
     }
   return (
     <div className="h-full w-full pt-24">

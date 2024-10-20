@@ -25,6 +25,7 @@ const Home = () => {
                 <select className="ml-4 text-xl pr-4 outline-none cursor-pointer">
                     <option value="0">{name}</option>
                 </select>
+                <button onClick={() => {localStorage.clear()}} className="text-white py-1 px-2 rounded-lg ml-4 bg-red-500">Log Out</button>
             </div>
         </div>
     </div>
